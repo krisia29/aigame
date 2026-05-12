@@ -3,24 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Midnight Ride Club</title>
+  <title>Race Build Arena</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="game-shell">
     <header class="game-header">
       <div>
-        <h1>Midnight Ride Club</h1>
-        <p>Customize your midnight machine, tune it for speed, and dominate neon-lit street circuits with style.</p>
+        <h1>Race Build Arena</h1>
+        <p>Build your dream ride, tune performance upgrades, and race through urban circuits with free and premium features.</p>
       </div>
       <div class="hud">
         <div class="hud-item">Credits: <span id="credits">0</span></div>
         <div class="hud-item">Premium Coins: <span id="coins">0</span></div>
         <div class="hud-item">High Score: <span id="highScore">0</span></div>
-      </div>
-      <div class="view-toggle">
-        <button id="desktopViewBtn" class="view-btn active">Desktop View</button>
-        <button id="mobileViewBtn" class="view-btn">Mobile View</button>
       </div>
     </header>
 
@@ -48,8 +44,8 @@
 
       <aside class="garage-panel">
         <div class="garage-header">
-          <h2>Midnight Garage</h2>
-          <span>Build your street legend</span>
+          <h2>Garage</h2>
+          <span>Customize your build</span>
         </div>
 
         <div class="build-preview" id="previewPane">
@@ -120,41 +116,15 @@
         </div>
 
         <div class="garage-section premium-panel">
-          <h3>Pro Tuning</h3>
-          <p>Unlock exclusive street parts and premium build perks.</p>
+          <h3>Premium Suite</h3>
+          <p>Unlock exclusive visual builds and pro tuning perks.</p>
           <button id="buyPremium">Unlock Pro Suite (5 coins)</button>
           <div class="premium-badge hidden" id="proBadge">PRO ACCESS ENABLED</div>
         </div>
 
         <div class="community-panel">
-          <h3>Street Crew</h3>
-          <p>Showcase your machine in the underground scene, earn respect, and climb the city leaderboard.</p>
-        </div>
-
-        <div class="account-panel">
-          <div class="panel-header">
-            <div>
-              <h3>Member Access</h3>
-              <span id="signedInUser">Guest</span>
-            </div>
-          </div>
-          <div class="auth-body">
-            <div class="auth-row">
-              <input id="authUsername" type="text" placeholder="Username" />
-              <input id="authPassword" type="password" placeholder="Password" />
-            </div>
-            <div class="auth-actions">
-              <button id="signInBtn">Sign In</button>
-              <button id="registerBtn">Create Account</button>
-            </div>
-            <div class="auth-message" id="authMessage"></div>
-            <button id="signOutBtn" class="hidden">Sign Out</button>
-          </div>
-        </div>
-
-        <div class="leaderboard-panel">
-          <h3>Leaderboard</h3>
-          <ol id="leaderboardList"></ol>
+          <h3>Community Showcase</h3>
+          <p>Your custom build is ready for the streets. Share your ride with racing fans and climb the global leaderboard.</p>
         </div>
       </aside>
     </main>
