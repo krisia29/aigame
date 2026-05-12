@@ -1,7 +1,7 @@
 :root {
   color-scheme: dark;
   font-family: Inter, system-ui, sans-serif;
-  background: radial-gradient(circle at top, #08101f 0%, #03060f 65%);
+  background: radial-gradient(circle at top, #100b1c 0%, #02050f 48%, #000000 100%);
   color: #eef2ff;
 }
 
@@ -15,13 +15,34 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 24px;
+  background-image: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.14), transparent 22%),
+    linear-gradient(180deg, rgba(5, 9, 21, 0.95), rgba(1, 2, 6, 0.98));
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" preserveAspectRatio="none"%3E%3Cpath d="M0 260 C 200 200 400 280 600 240 C 800 200 1000 260 1200 220 L1200 300 L0 300 Z" fill="rgba(37, 99, 235, 0.06)"/%3E%3C/svg%3E');
+  pointer-events: none;
 }
 
 .game-shell {
   width: min(100%, 1180px);
   display: grid;
   gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.game-shell::before {
+  content: '';
+  position: absolute;
+  inset: -24px;
+  border-radius: 36px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.18), rgba(14, 30, 70, 0));
+  pointer-events: none;
 }
 
 .game-header,
@@ -30,22 +51,27 @@ body {
   justify-content: space-between;
   gap: 16px;
   align-items: center;
-  padding: 18px 22px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-  background: rgba(6, 12, 33, 0.82);
-  backdrop-filter: blur(12px);
+  padding: 20px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  background: rgba(6, 12, 33, 0.88);
+  box-shadow: 0 20px 60px rgba(16, 18, 45, 0.28);
+  backdrop-filter: blur(16px);
 }
 
 .game-header h1 {
   margin: 0 0 8px;
-  font-size: clamp(1.8rem, 2.4vw, 2.8rem);
+  font-size: clamp(2rem, 2.8vw, 3.2rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .game-header p {
   margin: 0;
-  opacity: 0.82;
-  max-width: 600px;
+  opacity: 0.84;
+  max-width: 620px;
+  font-size: 1rem;
+  color: #dbeafe;
 }
 
 .hud {
@@ -56,9 +82,38 @@ body {
 
 .hud-item {
   font-variant-numeric: tabular-nums;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.05);
+}
+
+.view-toggle {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.view-btn {
+  min-width: 110px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(14, 23, 55, 0.92);
+  color: #dbeafe;
+  transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+
+.view-btn.active {
+  background: rgba(124, 58, 237, 0.94);
+  border-color: rgba(192, 132, 252, 0.9);
+  color: #ffffff;
+}
+
+.view-btn:hover {
+  transform: translateY(-1px);
 }
 
 .game-grid {
@@ -74,11 +129,20 @@ body {
 
 .canvas-wrapper {
   position: relative;
-  border-radius: 24px;
+  border-radius: 28px;
   overflow: hidden;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #09101f;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  background: linear-gradient(180deg, rgba(12, 17, 38, 0.96), rgba(5, 8, 19, 0.98));
+}
+
+.canvas-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 40%),
+    radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.08), transparent 28%);
+  pointer-events: none;
 }
 
 canvas {
@@ -86,7 +150,7 @@ canvas {
   width: 100%;
   height: auto;
   max-height: 72vh;
-  background: #08101f;
+  background: #05090f;
 }
 
 .overlay {
@@ -104,12 +168,13 @@ canvas {
 }
 
 .overlay-panel {
-  width: min(420px, 90%);
-  padding: 28px 24px;
+  width: min(460px, 90%);
+  padding: 30px 26px;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 20px;
-  background: rgba(6, 12, 33, 0.92);
+  border: 1px solid rgba(124, 58, 237, 0.24);
+  border-radius: 24px;
+  background: rgba(8, 14, 36, 0.95);
+  box-shadow: 0 30px 60px rgba(124, 58, 237, 0.18);
 }
 
 .overlay-panel h2 {
@@ -128,31 +193,35 @@ button {
   border: none;
   cursor: pointer;
   border-radius: 999px;
-  padding: 12px 22px;
+  padding: 12px 24px;
   color: #eef2ff;
   font-size: 0.98rem;
-  background: linear-gradient(135deg, #3b82f6, #7c3aed);
-  box-shadow: 0 16px 34px rgba(60, 99, 255, 0.18);
-  transition: transform 180ms ease, filter 180ms ease;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  background: linear-gradient(135deg, rgba(192, 132, 252, 0.96), rgba(59, 130, 246, 0.96));
+  box-shadow: 0 18px 40px rgba(88, 80, 255, 0.28);
+  transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
 }
 
 button:hover {
   transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow: 0 20px 48px rgba(124, 58, 237, 0.32);
 }
 
 .race-status {
   display: grid;
   grid-template-columns: repeat(4, minmax(120px, 1fr));
   gap: 12px;
-  padding: 14px 18px;
-  border-radius: 18px;
-  background: rgba(8, 14, 36, 0.86);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(13, 28, 68, 0.96), rgba(11, 16, 34, 0.9));
+  border: 1px solid rgba(124, 58, 237, 0.16);
 }
 
 .race-status div {
   font-variant-numeric: tabular-nums;
-  color: #dbeafe;
+  color: #e0e7ff;
 }
 
 .garage-panel {
@@ -161,14 +230,16 @@ button:hover {
 }
 
 .garage-header {
-  padding: 16px 18px;
-  border-radius: 20px;
-  background: rgba(8, 14, 36, 0.86);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(8, 14, 36, 0.94), rgba(5, 8, 18, 0.95));
+  border: 1px solid rgba(124, 58, 237, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .garage-header h2 {
   margin: 0 0 6px;
+  font-size: 1.18rem;
 }
 
 .garage-header span {
@@ -177,10 +248,11 @@ button:hover {
 }
 
 .build-preview {
-  padding: 18px;
-  border-radius: 20px;
-  background: rgba(8, 14, 36, 0.86);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(9, 15, 33, 0.94), rgba(5, 10, 19, 0.96));
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  box-shadow: 0 18px 40px rgba(19, 29, 61, 0.24);
 }
 
 .preview-top {
@@ -191,8 +263,8 @@ button:hover {
 
 .preview-body {
   height: 150px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(29, 78, 216, 0.14), rgba(6, 12, 33, 0.72));
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(57, 89, 234, 0.16), rgba(5, 9, 20, 0.9));
   position: relative;
   overflow: hidden;
 }
@@ -204,21 +276,77 @@ button:hover {
   background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.12), transparent 38%);
 }
 
+.build-preview .preview-body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), transparent 16%),
+    linear-gradient(180deg, transparent 30%, rgba(255, 255, 255, 0.04) 32%, transparent 36%);
+  pointer-events: none;
+}
+
 .car-sprite {
   position: absolute;
   left: 50%;
-  top: 32%;
-  width: 160px;
-  height: 90px;
+  top: 25%;
+  width: 220px;
+  height: 110px;
   transform: translateX(-50%);
 }
 
 .car-body {
   position: absolute;
-  inset: 18px 0 0 0;
-  border-radius: 18px 18px 14px 14px;
-  background: var(--car-color);
-  box-shadow: inset 0 -8px rgba(0, 0, 0, 0.14);
+  inset: 16px 0 0 0;
+  border-radius: 24px 24px 18px 18px;
+  background: linear-gradient(180deg, var(--car-color) 0%, #0f172a 62%);
+  box-shadow: inset 0 -12px rgba(0, 0, 0, 0.2), 0 12px 30px rgba(0, 0, 0, 0.24);
+}
+
+.car-window {
+  position: absolute;
+  left: 32px;
+  top: 18px;
+  width: 120px;
+  height: 30px;
+  border-radius: 10px 10px 4px 4px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08));
+  box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.08);
+}
+
+.headlight,
+.taillight {
+  position: absolute;
+  width: 10px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.headlight {
+  top: 72px;
+  background: linear-gradient(180deg, #fef08a, #f59e0b);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.45);
+}
+
+.headlight.left {
+  left: 14px;
+}
+
+.headlight.right {
+  right: 14px;
+}
+
+.taillight {
+  top: 72px;
+  background: linear-gradient(180deg, #f43f5e, #be123c);
+  box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
+}
+
+.taillight.left {
+  left: 24px;
+}
+
+.taillight.right {
+  right: 24px;
 }
 
 .car-roof {
@@ -287,21 +415,105 @@ button:hover {
 }
 
 .garage-section {
+  padding: 20px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(12, 16, 34, 0.94), rgba(5, 9, 18, 0.95));
+  border: 1px solid rgba(124, 58, 237, 0.16);
+  box-shadow: 0 20px 42px rgba(8, 10, 24, 0.26);
+}
+
+.account-panel,
+.leaderboard-panel {
   padding: 18px;
-  border-radius: 20px;
-  background: rgba(8, 14, 36, 0.86);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(9, 14, 28, 0.96), rgba(4, 7, 15, 0.96));
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+.account-panel .panel-header,
+.leaderboard-panel h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.account-panel .panel-header h3,
+.leaderboard-panel h3 {
+  margin: 0 0 12px;
+}
+
+.account-panel span {
+  font-size: 0.95rem;
+  color: #c7d2fe;
+  opacity: 0.9;
+}
+
+.auth-body {
+  display: grid;
+  gap: 12px;
+}
+
+.auth-row {
+  display: grid;
+  gap: 10px;
+}
+
+.auth-row input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  background: rgba(255, 255, 255, 0.05);
+  color: #eef2ff;
+}
+
+.auth-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.auth-message {
+  min-height: 24px;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.leaderboard-panel ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.leaderboard-panel li {
+  display: grid;
+  grid-template-columns: auto minmax(40px, max-content);
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.leaderboard-panel li span:last-child {
+  color: #a5b4fc;
+  font-variant-numeric: tabular-nums;
 }
 
 .garage-section h3 {
   margin: 0 0 12px;
+  letter-spacing: 0.02em;
 }
 
 input[type='text'] {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(124, 58, 237, 0.24);
   background: rgba(255, 255, 255, 0.05);
   color: #eef2ff;
 }
@@ -315,8 +527,15 @@ input[type='text'] {
 .color-button {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 14px;
-  border: 2px solid transparent;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  transition: transform 150ms ease, border-color 150ms ease;
+}
+
+.color-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(124, 58, 237, 0.55);
 }
 
 .color-button.premium {
@@ -342,10 +561,17 @@ input[type='text'] {
 .option-button {
   flex: 1;
   min-width: 110px;
-  padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
   color: #eef2ff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.option-button:hover {
+  transform: translateY(-1px);
+  background: rgba(124, 58, 237, 0.08);
 }
 
 .option-button.premium {
@@ -377,12 +603,13 @@ input[type='text'] {
 
 .premium-badge {
   margin-top: 14px;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: rgba(84, 60, 255, 0.18);
-  color: #c7d2fe;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(124, 58, 237, 0.2);
+  color: #d8d8ff;
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .hidden {
@@ -402,12 +629,17 @@ input[type='text'] {
 
 .game-footer {
   align-items: center;
-  padding: 16px 18px;
+  padding: 18px 22px;
 }
 
 .game-footer .controls {
   flex-wrap: wrap;
   gap: 14px;
+}
+
+.game-footer p {
+  margin: 0;
+  opacity: 0.78;
 }
 
 @media (max-width: 1060px) {
@@ -426,4 +658,34 @@ input[type='text'] {
   .race-status {
     grid-template-columns: repeat(2, minmax(120px, 1fr));
   }
+}
+
+body.mobile-view .game-grid {
+  grid-template-columns: 1fr;
+}
+
+body.mobile-view .game-header,
+body.mobile-view .game-footer {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+body.mobile-view .game-header {
+  gap: 14px;
+}
+
+body.mobile-view .canvas-wrapper {
+  border-radius: 22px;
+}
+
+body.mobile-view .garage-panel {
+  order: 1;
+}
+
+body.mobile-view .play-area {
+  order: 0;
+}
+
+body.mobile-view .game-shell {
+  width: min(100%, 720px);
 }
