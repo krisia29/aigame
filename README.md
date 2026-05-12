@@ -23,14 +23,10 @@ A browser-based racing and customization game for car enthusiasts.
 - `script.js` — racing logic, obstacles, upgrades, and save data
 
 ## Publish to GitHub Pages
-1. Install Git if not already installed.
-2. Create a new GitHub repository and connect it to this folder.
-3. Run:
-   - `git init`
-   - `git add .`
-   - `git commit -m "Initial game release"`
-   - `git branch -M main`
-   - `git remote add origin https://github.com/<your-username>/<your-repo>.git`
-   - `git push -u origin main`
-4. The workflow in `.github/workflows/pages.yml` will deploy the site automatically to the `gh-pages` branch.
+1. Push your code to the `main` branch in a GitHub repository.
+2. Open the repository on GitHub and go to the `Actions` tab.
+3. Select `Deploy to GitHub Pages` and click `Run workflow`.
+4. The workflow will deploy the site to the `gh-pages` branch.
 5. Your page will be available at `https://<your-username>.github.io/<your-repo>/` once deployment completes.
+
+> If you prefer, the workflow is also triggered automatically on every push to `main`.
