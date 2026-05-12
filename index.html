@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Race Build Arena</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="game-shell">
+    <header class="game-header">
+      <div>
+        <h1>Race Build Arena</h1>
+        <p>Build your dream ride, tune performance upgrades, and race through urban circuits with free and premium features.</p>
+      </div>
+      <div class="hud">
+        <div class="hud-item">Credits: <span id="credits">0</span></div>
+        <div class="hud-item">Premium Coins: <span id="coins">0</span></div>
+        <div class="hud-item">High Score: <span id="highScore">0</span></div>
+      </div>
+    </header>
+
+    <main class="game-grid">
+      <section class="play-area">
+        <div class="canvas-wrapper">
+          <canvas id="gameCanvas" width="800" height="500"></canvas>
+          <div id="overlay" class="overlay hidden">
+            <div class="overlay-panel" id="overlayPanel">
+              <h2 id="overlayTitle">Ready for the rally?</h2>
+              <p id="overlayText">Start a custom race, tune your car, and show the world your build.</p>
+              <button id="startButton">START RACE</button>
+              <button id="restartButton" class="hidden">RESTART</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="race-status">
+          <div>Build: <span id="buildName">Urban Racer</span></div>
+          <div>Integrity: <span id="integrity">3</span>/3</div>
+          <div>Distance: <span id="distance">2800</span>m</div>
+          <div>Race Score: <span id="score">0</span></div>
+        </div>
+      </section>
+
+      <aside class="garage-panel">
+        <div class="garage-header">
+          <h2>Garage</h2>
+          <span>Customize your build</span>
+        </div>
+
+        <div class="build-preview" id="previewPane">
+          <div class="preview-top">Car Preview</div>
+          <div class="preview-body"></div>
+        </div>
+
+        <div class="garage-section">
+          <h3>Build Name</h3>
+          <input id="buildNameInput" type="text" placeholder="Enter build name" maxlength="20" />
+        </div>
+
+        <div class="garage-section">
+          <h3>Paint</h3>
+          <div class="color-grid">
+            <button class="color-button" data-color="#38bdf8" style="background:#38bdf8"></button>
+            <button class="color-button" data-color="#f97316" style="background:#f97316"></button>
+            <button class="color-button" data-color="#22c55e" style="background:#22c55e"></button>
+            <button class="color-button" data-color="#a78bfa" style="background:#a78bfa"></button>
+            <button class="color-button premium" data-color="#facc15" style="background:#facc15">P</button>
+          </div>
+        </div>
+
+        <div class="garage-section">
+          <h3>Body Kit</h3>
+          <div class="option-row">
+            <button class="option-button" data-wheel="classic">Classic</button>
+            <button class="option-button" data-wheel="sport">Sport</button>
+            <button class="option-button premium" data-wheel="carbon">Carbon</button>
+          </div>
+          <div class="option-row">
+            <button class="option-button" data-spoiler="none">None</button>
+            <button class="option-button" data-spoiler="wing">Wing</button>
+            <button class="option-button premium" data-spoiler="duckbill">Duckbill</button>
+          </div>
+        </div>
+
+        <div class="garage-section">
+          <h3>Performance Upgrades</h3>
+          <div class="upgrade-item">
+            <div>
+              <strong>Engine</strong>
+              <div>Level <span id="engineLevel">1</span></div>
+            </div>
+            <button class="upgrade-btn" data-upgrade="engine">Upgrade <span id="engineCost">120</span></button>
+          </div>
+          <div class="upgrade-item">
+            <div>
+              <strong>Tires</strong>
+              <div>Level <span id="tiresLevel">1</span></div>
+            </div>
+            <button class="upgrade-btn" data-upgrade="tires">Upgrade <span id="tiresCost">100</span></button>
+          </div>
+          <div class="upgrade-item">
+            <div>
+              <strong>Brakes</strong>
+              <div>Level <span id="brakesLevel">1</span></div>
+            </div>
+            <button class="upgrade-btn" data-upgrade="brakes">Upgrade <span id="brakesCost">90</span></button>
+          </div>
+          <div class="upgrade-item">
+            <div>
+              <strong>Nitro</strong>
+              <div>Level <span id="nitroLevel">1</span></div>
+            </div>
+            <button class="upgrade-btn" data-upgrade="nitro">Upgrade <span id="nitroCost">150</span></button>
+          </div>
+        </div>
+
+        <div class="garage-section premium-panel">
+          <h3>Premium Suite</h3>
+          <p>Unlock exclusive visual builds and pro tuning perks.</p>
+          <button id="buyPremium">Unlock Pro Suite (5 coins)</button>
+          <div class="premium-badge hidden" id="proBadge">PRO ACCESS ENABLED</div>
+        </div>
+
+        <div class="community-panel">
+          <h3>Community Showcase</h3>
+          <p>Your custom build is ready for the streets. Share your ride with racing fans and climb the global leaderboard.</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="game-footer">
+      <div class="controls">
+        <span>Controls:</span>
+        <span>← → / A D</span>
+        <span>Shift for Nitro</span>
+        <span>P to pause</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
