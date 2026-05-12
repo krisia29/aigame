@@ -24,6 +24,19 @@ const brakesCostEl = document.getElementById('brakesCost');
 const nitroCostEl = document.getElementById('nitroCost');
 const buyPremiumButton = document.getElementById('buyPremium');
 const premiumBadge = document.getElementById('proBadge');
+const desktopViewBtn = document.getElementById('desktopViewBtn');
+const mobileViewBtn = document.getElementById('mobileViewBtn');
+const authUsername = document.getElementById('authUsername');
+const authPassword = document.getElementById('authPassword');
+const signInBtn = document.getElementById('signInBtn');
+const registerBtn = document.getElementById('registerBtn');
+const signOutBtn = document.getElementById('signOutBtn');
+const authMessage = document.getElementById('authMessage');
+const signedInUser = document.getElementById('signedInUser');
+const leaderboardList = document.getElementById('leaderboardList');
+let accounts = {};
+let currentUser = localStorage.getItem('race-current-user') || null;
+let viewMode = localStorage.getItem('viewMode') || 'desktop';
 
 const state = {
   width: 800,
@@ -69,7 +82,58 @@ const shop = {
 
 const obstacles = [];
 
+function loadAccounts() {
+  return JSON.parse(localStorage.getItem('race-accounts') || '{}');
+}
+
+function saveAccounts() {
+  localStorage.setItem('race-accounts', JSON.stringify(accounts));
+}
+
+function loadAccountData(account) {
+  state.credits = account.credits ?? state.credits;
+  state.coins = account.coins ?? state.coins;
+  state.highScore = account.highScore ?? state.highScore;
+  state.premiumAccess = account.premiumAccess ?? state.premiumAccess;
+  state.buildName = account.buildName || state.buildName;
+  player.color = account.color || player.color;
+  player.wheel = account.wheel || player.wheel;
+  player.spoiler = account.spoiler || player.spoiler;
+  shop.engine.level = account.engineLevel || shop.engine.level;
+  shop.tires.level = account.tiresLevel || shop.tires.level;
+  shop.brakes.level = account.brakesLevel || shop.brakes.level;
+  shop.nitro.level = account.nitroLevel || shop.nitro.level;
+}
+
+function saveUserAccount() {
+  if (!currentUser) return;
+  const account = accounts[currentUser] || {};
+  accounts[currentUser] = {
+    password: account.password,
+    credits: state.credits,
+    coins: state.coins,
+    highScore: state.highScore,
+    premiumAccess: state.premiumAccess,
+    buildName: state.buildName,
+    color: player.color,
+    wheel: player.wheel,
+    spoiler: player.spoiler,
+    engineLevel: shop.engine.level,
+    tiresLevel: shop.tires.level,
+    brakesLevel: shop.brakes.level,
+    nitroLevel: shop.nitro.level,
+  };
+  saveAccounts();
+}
+
 function loadSave() {
+  accounts = loadAccounts();
+  currentUser = localStorage.getItem('race-current-user') || null;
+  updateAuthDisplay();
+  if (currentUser && accounts[currentUser]) {
+    loadAccountData(accounts[currentUser]);
+    return;
+  }
   const saved = JSON.parse(localStorage.getItem('race-save') || '{}');
   state.credits = saved.credits ?? state.credits;
   state.coins = saved.coins ?? state.coins;
@@ -86,6 +150,10 @@ function loadSave() {
 }
 
 function saveProgress() {
+  if (currentUser) {
+    saveUserAccount();
+    return;
+  }
   localStorage.setItem(
     'race-save',
     JSON.stringify({
@@ -103,6 +171,104 @@ function saveProgress() {
       nitroLevel: shop.nitro.level,
     })
   );
+}
+
+function updateLeaderBoard() {
+  const entries = Object.entries(accounts)
+    .map(([username, data]) => ({ username, score: data.highScore || 0 }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6);
+  leaderboardList.innerHTML = entries
+    .map(
+      (entry, index) => `
+        <li>
+          <span>${index + 1}. ${entry.username}</span>
+          <span>${entry.score}</span>
+        </li>`
+    )
+    .join('');
+}
+
+function showAuthMessage(message, isError = false) {
+  authMessage.textContent = message;
+  authMessage.style.color = isError ? '#fb7185' : '#93c5fd';
+}
+
+function updateAuthDisplay() {
+  signedInUser.textContent = currentUser ? currentUser : 'Guest';
+  signOutBtn.classList.toggle('hidden', !currentUser);
+}
+
+function signIn() {
+  const username = authUsername.value.trim();
+  const password = authPassword.value;
+  if (!username || !password) {
+    showAuthMessage('Enter username and password.', true);
+    return;
+  }
+  if (!accounts[username]) {
+    showAuthMessage('User not found.', true);
+    return;
+  }
+  if (accounts[username].password !== password) {
+    showAuthMessage('Password incorrect.', true);
+    return;
+  }
+  currentUser = username;
+  localStorage.setItem('race-current-user', currentUser);
+  loadAccountData(accounts[currentUser]);
+  updateAuthDisplay();
+  updateLeaderBoard();
+  updateGarage();
+  updateHUD();
+  showAuthMessage(`Signed in as ${username}.`);
+}
+
+function registerUser() {
+  const username = authUsername.value.trim();
+  const password = authPassword.value;
+  if (!username || !password) {
+    showAuthMessage('Enter a username and password to register.', true);
+    return;
+  }
+  if (accounts[username]) {
+    showAuthMessage('Username already exists.', true);
+    return;
+  }
+  accounts[username] = {
+    password,
+    credits: state.credits,
+    coins: state.coins,
+    highScore: state.highScore,
+    premiumAccess: state.premiumAccess,
+    buildName: state.buildName,
+    color: player.color,
+    wheel: player.wheel,
+    spoiler: player.spoiler,
+    engineLevel: shop.engine.level,
+    tiresLevel: shop.tires.level,
+    brakesLevel: shop.brakes.level,
+    nitroLevel: shop.nitro.level,
+  };
+  saveAccounts();
+  currentUser = username;
+  localStorage.setItem('race-current-user', currentUser);
+  updateAuthDisplay();
+  updateLeaderBoard();
+  showAuthMessage('Account created and signed in.');
+}
+
+function signOut() {
+  currentUser = null;
+  localStorage.removeItem('race-current-user');
+  updateAuthDisplay();
+  showAuthMessage('Signed out.');
+}
+
+function initAuth() {
+  signInBtn.addEventListener('click', signIn);
+  registerBtn.addEventListener('click', registerUser);
+  signOutBtn.addEventListener('click', signOut);
 }
 
 function updateHUD() {
@@ -130,7 +296,11 @@ function updateGarage() {
   previewPane.innerHTML = `
     <div class="car-sprite" style="--car-color: ${player.color};">
       <div class="car-body"></div>
-      <div class="car-roof"></div>
+      <div class="car-window"></div>
+      <div class="headlight left"></div>
+      <div class="headlight right"></div>
+      <div class="taillight left"></div>
+      <div class="taillight right"></div>
       <div class="car-spoiler ${player.spoiler}"></div>
       <div class="wheel front ${player.wheel}"></div>
       <div class="wheel rear ${player.wheel}"></div>
@@ -193,6 +363,7 @@ function endRace(won) {
     state.highScore = state.score;
   }
   saveProgress();
+  updateLeaderBoard();
   const detail = won
     ? `Earned ${rewardCredits} credits and ${rewardCoins} premium coins.`
     : 'Your build needs more tuning before the next run.';
@@ -331,27 +502,42 @@ function drawTrack() {
 function drawPlayer() {
   ctx.save();
   ctx.translate(player.x, player.y);
+
   ctx.fillStyle = player.color;
   ctx.beginPath();
-  ctx.moveTo(10, 0);
-  ctx.lineTo(player.width - 10, 0);
-  ctx.lineTo(player.width, player.height - 12);
-  ctx.lineTo(0, player.height - 12);
+  ctx.moveTo(8, player.height * 0.28);
+  ctx.quadraticCurveTo(14, 4, player.width * 0.38, 4);
+  ctx.lineTo(player.width * 0.72, 4);
+  ctx.quadraticCurveTo(player.width - 8, 4, player.width, player.height * 0.24);
+  ctx.lineTo(player.width, player.height * 0.74);
+  ctx.quadraticCurveTo(player.width * 0.95, player.height, player.width * 0.78, player.height);
+  ctx.lineTo(player.width * 0.18, player.height);
+  ctx.quadraticCurveTo(10, player.height, 8, player.height * 0.74);
   ctx.closePath();
   ctx.fill();
 
   ctx.fillStyle = '#0f172a';
-  ctx.fillRect(8, 12, player.width - 16, player.height - 20);
+  ctx.beginPath();
+  ctx.moveTo(player.width * 0.32, player.height * 0.22);
+  ctx.lineTo(player.width * 0.68, player.height * 0.22);
+  ctx.lineTo(player.width * 0.64, player.height * 0.4);
+  ctx.lineTo(player.width * 0.36, player.height * 0.4);
+  ctx.closePath();
+  ctx.fill();
 
-  ctx.fillStyle = '#e2e8f0';
-  ctx.fillRect(14, 14, player.width - 28, 12);
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillRect(10, player.height * 0.72, 12, 10);
+  ctx.fillRect(player.width - 22, player.height * 0.72, 12, 10);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.fillRect(8, player.height * 0.28, 10, 8);
+  ctx.fillRect(player.width - 18, player.height * 0.28, 10, 8);
 
   ctx.fillStyle = '#0f172a';
-  ctx.fillRect(10, player.height - 14, player.width - 20, 12);
-
-  ctx.fillStyle = '#111827';
-  ctx.fillRect(6, 16, 8, 14);
-  ctx.fillRect(player.width - 14, 16, 8, 14);
+  ctx.beginPath();
+  ctx.arc(14, player.height - 10, 6, 0, Math.PI * 2);
+  ctx.arc(player.width - 14, player.height - 10, 6, 0, Math.PI * 2);
+  ctx.fill();
 
   ctx.restore();
 }
@@ -474,6 +660,21 @@ function buyPremium() {
   setOverlay('Pro Suite Unlocked', 'START RACE', false, 'Premium visuals and exclusive tuning are now available.');
 }
 
+function setViewMode(mode) {
+  viewMode = mode;
+  localStorage.setItem('viewMode', mode);
+  document.body.classList.toggle('mobile-view', mode === 'mobile');
+  desktopViewBtn.classList.toggle('active', mode === 'desktop');
+  mobileViewBtn.classList.toggle('active', mode === 'mobile');
+  resizeCanvas();
+}
+
+function initViewMode() {
+  desktopViewBtn.addEventListener('click', () => setViewMode('desktop'));
+  mobileViewBtn.addEventListener('click', () => setViewMode('mobile'));
+  setViewMode(viewMode);
+}
+
 function initSelectors() {
   document.querySelectorAll('.color-button').forEach((button) => {
     button.addEventListener('click', () => {
@@ -549,20 +750,24 @@ window.addEventListener('resize', resizeCanvas);
 
 function resizeCanvas() {
   const ratio = window.devicePixelRatio || 1;
-  canvas.width = 800 * ratio;
-  canvas.height = 500 * ratio;
+  const dimensions = viewMode === 'mobile' ? { width: 360, height: 640 } : { width: 800, height: 500 };
+  canvas.width = dimensions.width * ratio;
+  canvas.height = dimensions.height * ratio;
   canvas.style.width = '100%';
   ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-  state.width = 800;
-  state.height = 500;
+  state.width = dimensions.width;
+  state.height = dimensions.height;
 }
 
 function init() {
   loadSave();
+  initViewMode();
+  initAuth();
   resizeCanvas();
   initSelectors();
   updateGarage();
   updateHUD();
+  updateLeaderBoard();
   setOverlay('Ready for the rally?', 'START RACE', false, 'Build your ride, tune upgrades, and race through the city.');
   state.lastTime = performance.now();
   requestAnimationFrame(loop);
