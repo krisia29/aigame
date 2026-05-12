@@ -1,4 +1,4 @@
-# Race Build Arena
+# Kustoms
 
 A browser-based racing and customization game for car enthusiasts.
 
